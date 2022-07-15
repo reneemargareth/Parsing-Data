@@ -78,12 +78,13 @@ def relationship_status(from_member, to_member, social_graph):
                   ]
     },
 }
+    
     if to_member in social_graph[from_member]["following"] and from_member in social_graph[to_member]["following"]:
         return "friends"
     elif to_member in social_graph[from_member]["following"]:
         return "follower"
     elif from_member in social_graph[to_member]["following"]:
-        return "following"
+        return "followed by"
     else:
         return "no relationship"
 
@@ -260,43 +261,55 @@ def eta(first_stop, second_stop, route_map):
     legs_a = legs[("upd","admu")]["travel_time_mins"]
     legs_b = legs[("admu","dlsu")]["travel_time_mins"]
     legs_c = legs[("dlsu","upd")]["travel_time_mins"]
+    
     legs2_a = legs2[("a1","a2")]["travel_time_mins"]
     legs2_b = legs2[("a2","b1")]["travel_time_mins"] 
     legs2_c = legs2[("b1","a1")]["travel_time_mins"]
     
-    if first_stop == "upd" and second_stop == "admu":
-        return legs_a
-    elif first_stop == "upd" and second_stop == "dlsu":
-        return legs_a+legs_b
-    elif first_stop == "upd" and second_stop == "upd": 
-        return legs_a+legs_b+legs_c
-    elif first_stop == "admu" and second_stop == "dlsu":
-        return legs_b
-    elif first_stop == "admu" and second_stop == "upd":
-        return legs_b+legs_c
-    elif first_stop == "admu" and second_stop == "admu":
-        return legs_b+legs_c+legs_a
-    elif first_stop == "dlsu" and second_stop == "upd":
-        return legs_c
-    elif first_stop == "dlsu" and second_stop == "admu":
-        return legs_c+legs_a
-    elif first_stop == "dlsu" and second_stop == "dlsu":
-        return legs_c+legs_b+legs_a
-    elif first_stop == "a1" and second_stop == "a2":
-        return legs2_a
-    elif first_stop == "a1" and second_stop == "b1":
-        return legs2_a + legs2_b
-    elif first_stop == "a1" and second_stop == "a1":
-        return legs2_a + legs2_b + legs2_c
-    elif first_stop == "a2" and second_stop == "b1":
-        return legs2_b
-    elif first_stop == "a2" and second_stop == "a1":
-        return legs2_b + legs2_c
-    elif first_stop == "a2" and second_stop == "a2":
-        return legs2_b + legs2_c + legs2_a
-    elif first_stop == "b1" and second_stop == "a1":
-        return legs2_c
-    elif first_stop == "b1" and second_stop == "a2":
-        return legs2_c + legs2_a
-    elif first_stop == "b1" and second_stop == "b1":
-        return legs2_c + legs2_a + legs2_b
+    while first_stop == "upd":
+        if second_stop == "admu":
+            return legs_a
+        elif second_stop == "dlsu":
+            return legs_a+legs_b
+        elif second_stop == "upd": 
+            return legs_a+legs_b+legs_c
+    
+    while first_stop == "admu":
+        if second_stop == "dlsu":
+            return legs_b
+        elif second_stop == "upd":
+            return legs_b+legs_c
+        elif second_stop == "admu":
+            return legs_b+legs_c+legs_a
+    
+    while first_stop == "dlsu":
+        if second_stop == "upd":
+            return legs_c
+        elif second_stop == "admu":
+            return legs_c+legs_a
+        elif second_stop == "dlsu":
+            return legs_c+legs_b+legs_a
+    
+    while first_stop == "a1": 
+        if second_stop == "a2":
+            return legs2_a
+        elif first_stop == "a1" and second_stop == "b1":
+            return legs2_a + legs2_b
+        elif first_stop == "a1" and second_stop == "a1":
+            return legs2_a + legs2_b + legs2_c
+    
+    while first_stop == "a2": 
+        if second_stop == "b1":
+            return legs2_b
+        elif second_stop == "a1":
+            return legs2_b + legs2_c
+        elif second_stop == "a2":
+            return legs2_b + legs2_c + legs2_a
+    
+    while first_stop == "b1":
+        if second_stop == "a1":
+            return legs2_c
+        elif second_stop == "a2":
+            return legs2_c + legs2_a
+        elif second_stop == "b1":
+            return legs2_c + legs2_a + legs2_b
